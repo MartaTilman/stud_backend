@@ -1,6 +1,7 @@
 const User = require("../models/usermodel");
 const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
+const { use } = require("../route/userroute");
 
 exports.register = async (req, res) => {
     console.log(req.body);
@@ -19,7 +20,7 @@ exports.register = async (req, res) => {
     } catch (error) {
         return res.status(400).json({
             title: 'error',
-            error: 'Email in use!'
+            error: error
         });
     }
 }
@@ -46,6 +47,8 @@ exports.login = async (req, res) => {
         res.status(200).json({
             title: 'Login successful!',
             token: token,
+            ime: user.firstname,
+            prezime: user.lastname
         });
     } catch (err) {
         console.error(err);
