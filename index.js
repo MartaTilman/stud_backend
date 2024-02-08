@@ -1,4 +1,6 @@
 const express = require('express')
+const http = require('http');
+const socketIo = require('socket.io');
 const cors = require('cors');
 const app = express()
 const port = 5000
@@ -6,6 +8,11 @@ const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const config = require('./config/db')
 const userRoutes = require('./api/route/userroute.js')
+const notesRouter = require('./api/route/notesroute.js');
+const chatRouter = require('./api/route/chatroute.js');
+
+const server = http.createServer(app);
+const io = socketIo(server);
 
 app.use(cors({
     origin: 'http://localhost:8080'
@@ -18,7 +25,18 @@ mongoose.connect(config.database)
     .catch(err => {
         console.log({ database_error: err });
     });
+
+app.use('/chat', chatRouter);
+
+io.on('connection', (socket) => {
+    console.log('A user connected');
+
+    socket.on('disconnect', () => {
+        console.log('User disconnected');
+    });
+});
 app.use(express.json());
+app.use('/notes', notesRouter);
 app.use(userRoutes);
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json()); app.listen(port, () => {
