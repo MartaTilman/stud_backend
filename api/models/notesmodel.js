@@ -1,24 +1,27 @@
-// Import mongoose or any other ORM/ODM library you're using
+// notesmodel.js
+
+
+
 const mongoose = require('mongoose');
 
-// Define the schema for your notes
-const NoteSchema = new mongoose.Schema({
-    title: {
-        type: String,
-        required: true,
-    },
-    content: {
-        type: String,
-        required: true,
-    },
-    user: {
+const noteSchema = new mongoose.Schema({
+    usernotes: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: true,
+
+
     },
+    title: String,
+    content: String,
+    date: {
+        type: Date,
+        default: Date.now // This sets the default value to the current date and time
+    }
+
+
+
 });
 
-// Create a model based on the schema
-const Note = mongoose.model('Note', NoteSchema);
+const Note = mongoose.model('Note', noteSchema);
 
 module.exports = Note;

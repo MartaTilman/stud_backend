@@ -1,67 +1,69 @@
-// Import the Notes Model
-const Notes = require('../models/notesmodel');
+const Note = require('../models/notesmodel');
 
-exports.getNotes = async (req, res) => {
+exports.getNote = async (req, res) => {
     try {
-        const userId = req.user._id; // Assuming user ID is available in the JWT token
-        const notes = await Note.find({ user: userId });
+        const userId = req.params.userId;
+        const notes = await Note.find({ usernotes: userId });
+
+        if (notes.length === 0) {
+            return res.status(404).json({ error: 'No notes found' });
+        }
+
         res.status(200).json(notes);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Server error' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
 };
 
+
+// Create a new note
 exports.createNote = async (req, res) => {
     try {
-        const { title, content } = req.body;
-        const userId = req.user._id; // Assuming user ID is available in the JWT token
-        const newNote = new Note({ title, content, user: userId });
-        await newNote.save();
-        res.status(201).json(newNote);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Server error' });
+        const { usernotes, title, content } = req.body;
+        const note = await Note.create({ usernotes, title, content });
+        res.status(201).json(note);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
 };
 
+// Update a note
 exports.updateNote = async (req, res) => {
     try {
-        const userId = req.user._id; // Assuming user ID is available in the JWT token
-        const { noteId } = req.params;
+        const noteId = req.params.noteId;
         const { title, content } = req.body;
 
-        const updatedNote = await Note.findOneAndUpdate(
-            { _id: noteId, user: userId },
+        // Find note by ID and update it
+        const note = await Note.findByIdAndUpdate(
+            noteId,
             { title, content },
-            { new: true }
+
         );
 
-        if (!updatedNote) {
-            return res.status(404).json({ message: 'Note not found or not authorized' });
+        if (!note) {
+            return res.status(404).json({ error: 'Note not found' });
         }
 
-        res.status(200).json(updatedNote);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Server error' });
+        res.status(200).json(note);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
 };
 
+// Delete a note
 exports.deleteNote = async (req, res) => {
     try {
-        const userId = req.user._id; // Assuming user ID is available in the JWT token
-        const { noteId } = req.params;
+        const noteId = req.params.noteId;
 
-        const deletedNote = await Note.findOneAndDelete({ _id: noteId, user: userId });
+        // Find note by ID and delete it
+        const note = await Note.findByIdAndDelete(noteId);
 
-        if (!deletedNote) {
-            return res.status(404).json({ message: 'Note not found or not authorized' });
+        if (!note) {
+            return res.status(404).json({ error: 'Note not found' });
         }
 
-        res.status(200).json(deletedNote);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Server error' });
+        res.status(200).json({ message: 'Note deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
 };

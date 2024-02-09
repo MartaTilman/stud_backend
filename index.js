@@ -28,17 +28,13 @@ mongoose.connect(config.database)
 
 app.use('/chat', chatRouter);
 
-io.on('connection', (socket) => {
-    console.log('A user connected');
-
-    socket.on('disconnect', () => {
-        console.log('User disconnected');
-    });
-});
-app.use(express.json());
-app.use('/notes', notesRouter);
-app.use(userRoutes);
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.json());
+app.use(notesRouter);
+app.use(userRoutes);
+
+
+
 app.use(bodyParser.json()); app.listen(port, () => {
     console.log(`App is running on ${port}`);
 

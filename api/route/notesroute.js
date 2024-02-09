@@ -1,20 +1,11 @@
-// notesRoute.js
-
 const express = require('express');
-const router = express.Router();
 const notesController = require('../controllers/notescontroller');
-const authenticateUser = require('../auth/authmiddleware');
 
-// GET /notes
-router.get('/', authenticateUser, notesController.getNotes);
+const router = express.Router();
 
-// POST /notes
-router.post('/', authenticateUser, notesController.createNote);
-
-// PUT /notes/:noteId
-router.put('/:noteId', authenticateUser, notesController.updateNote);
-
-// DELETE /notes/:noteId
-router.delete('/:noteId', authenticateUser, notesController.deleteNote);
+router.get('/notes/:userId', notesController.getNote);
+router.post('/notes', notesController.createNote);
+router.put('/notes/:noteId', notesController.updateNote);
+router.delete('/notes/:noteId', notesController.deleteNote);
 
 module.exports = router;

@@ -1,10 +1,8 @@
-// chatRouter.js
-
 const express = require('express');
-const router = express.Router();
-const chatController = require('../controllers/chatcontroller');
+const notesController = require('../controllers/notescontroller');
 
-router.post('/send', chatController.sendMessage);
-router.get('/:sender/:receiver', chatController.getMessages);
+const router = express.Router();
+
+router.post('/notes', notesController.createNote);
 
 module.exports = router;
