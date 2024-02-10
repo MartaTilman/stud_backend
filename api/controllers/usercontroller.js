@@ -2,7 +2,40 @@ const User = require("../models/usermodel");
 const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
 const { use } = require("../route/userroute");
+const util = require("util")
 
+
+exports.getUserDetails = async (req, res) => {
+    let token = req.headers.token;
+    const verifyAsync = util.promisify(jwt.verify);
+
+    try {
+        const decoded = await verifyAsync(token, 'secretkey');
+        const user = await User.findOne({ _id: decoded.userId });
+
+        if (!user) {
+            return res.status(404).json({
+                title: 'User not found'
+            });
+        }
+
+        return res.status(200).json({
+            title: 'user grabbed',
+            user: {
+                id: user._id,
+                username: user.username,
+                firstname: user.firstname,
+                lastname: user.lastname,
+                email: user.email
+            }
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            title: 'Internal server error'
+        });
+    }
+};
 exports.register = async (req, res) => {
     console.log(req.body);
     const newUser = new User({
