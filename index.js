@@ -9,7 +9,7 @@ const mongoose = require('mongoose')
 const config = require('./config/db')
 const userRoutes = require('./api/route/userroute.js')
 const notesRouter = require('./api/route/notesroute.js');
-const chatRouter = require('./api/route/chatroute.js');
+
 
 const server = http.createServer(app);
 const io = socketIo(server);
@@ -26,7 +26,7 @@ mongoose.connect(config.database)
         console.log({ database_error: err });
     });
 
-app.use('/chat', chatRouter);
+
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
