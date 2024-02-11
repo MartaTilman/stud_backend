@@ -14,8 +14,6 @@ exports.getNote = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
-
-
 // Create a new note
 exports.createNote = async (req, res) => {
     try {
