@@ -15,7 +15,7 @@ const server = http.createServer(app);
 const io = socketIo(server);
 
 app.use(cors({
-    origin: 'https://startling-tarsier-c29251.netlify.app/'
+    origin: 'https://startling-tarsier-c29251.netlify.app'
 }));
 
 mongoose.connect(config.database)
